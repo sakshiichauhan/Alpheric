@@ -36,7 +36,7 @@ export default function AlphericComingSoon() {
         >
           {/* Background */}
           <div
-            className="absolute inset-0 h-full w-full bg-cover bg-center"
+            className="absolute h-auto w-full inset-0 bg-center lg:bg-cover"
             style={{ backgroundImage: `url(${background})` }}
           />
           {/* Overlay for legibility */}
