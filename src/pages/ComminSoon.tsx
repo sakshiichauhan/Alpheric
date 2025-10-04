@@ -148,6 +148,7 @@ export default function AlphericComingSoon() {
                   max-[1380px]:sm:text-[32px]
                   max-[1200px]:sm:text-[28px]
                   max-sm:text-[22px] max-sm:leading-tight
+                  hover:underline
                 "
               >
                 hello@alpheric.com
@@ -155,7 +156,7 @@ export default function AlphericComingSoon() {
             </div>
 
             {/* Let’s talk — scale at 1380/1200; 640: tight lines */}
-            <div className="mt-8 flex items-center justify-between pr-2 sm:pr-4 lg:pr-8 xl:pr-12">
+            <div className="mt-8 flex items-center justify-between">
               <div className="flex items-center gap-4 sm:gap-5 ">
                 <span
                   className="
@@ -191,18 +192,21 @@ export default function AlphericComingSoon() {
                   talk
                 </span>
                 <span
-                className="
-                  cursor-pointer select-none
-                  text-3xl sm:text-4xl lg:text-[87px]
-                  max-[1380px]:lg:text-[78px]
-                  max-[1200px]:lg:text-[70px]
-                  max-[1080px]:lg:text-[60px]
-                  max-sm:leading-tight
-                "
-                onClick={() => setOpen(true)}
-              >
-                →
-              </span>
+  onClick={() => setOpen(true)}
+  aria-label="Open contact form"
+  className="
+    inline-flex items-center justify-center rounded-full
+    w-15 h-12 sm:w-20 sm:h-15 lg:w-27 lg:h-20
+    text-xl sm:text-2xl lg:text-3xl
+    bg-transparent text-current
+    transition-all duration-200 ease-out
+    hover:bg-black hover:text-white hover:scale-95
+    active:scale-90
+    max-sm:leading-tight
+  "
+>
+  →
+</span>
               </div>
 
               
