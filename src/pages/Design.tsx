@@ -63,7 +63,7 @@ const Design: React.FC = () => {
         className="min-h-screen py-10 md:py-20 overflow-hidden"
         aria-labelledby="design-heading"
       >
-        <div className="max-w-full flex flex-col px-4 md:px-8 lg:px-16 xl:px-20  md:mt-10">
+        <div className="max-w-full flex flex-col px-4 md:px-8 lg:px-16 xl:px-20 ">
           {/* ✅ Accessible heading */}
           <motion.h1
             id="design-heading"
@@ -81,7 +81,7 @@ const Design: React.FC = () => {
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
             custom={1}
-            className="flex items-center justify-start gap-2 md:gap-4 font-instrument-serif-italics text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-6 md:mb-10 leading-tight"
+            className="flex items-center justify-start gap-2 md:gap-4 font-instrument-serif-italics text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl  leading-tight"
           >
             <MoveRight className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 flex-shrink-0" />
             <span>oh, with amazing people too</span>

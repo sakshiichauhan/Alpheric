@@ -192,25 +192,29 @@ body {
 
 
 
-::-webkit-scrollbar {
-  width: 6px;
-  height: 2px;
+
+
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+      display: none;
+  }
+
+  .no-scrollbar {
+      -ms-overflow-style: none;
+      /* IE and Edge */
+      scrollbar-width: none;
+      /* Firefox */
+  }
+
+  /* Double lined text in vision page */
+  .text-outline {
+      text-shadow:
+          -2px -2px 2px #FAFAFA,
+          2px -2px 2px  #FAFAFA,
+          -2px 2px 2px  #FAFAFA,
+          2px 2px 2px  #FAFAFA;
+  }
+
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--brand-color2);
-  border-radius: 20px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--brand-color);
-}
-
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--brand-color2) transparent;
-}
