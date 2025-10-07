@@ -60,7 +60,7 @@ interface CarouselItem {
   
     return (
       <section
-        className="min-h-screen flex flex-col items-center justify-evenly px-4 sm:px-8 md:px-16 lg:px-24 py-10"
+        className="flex flex-col items-center justify-evenly pl-4 pr-0 sm:pl-6 md:pl-12 lg:pl-[90px] py-10"
       
       >
         {/* ✅ Accessible heading */}

@@ -79,7 +79,7 @@ const SolutionPage: React.FC = () => {
       {/* Hero Section */}
       <section
         ref={heroSectionRef}
-        className="h-screen flex flex-col justify-center items-center px-4 font-instrument-sans"
+        className="pt-10 md:pt-40 pb-6 md:pb-20    flex flex-col justify-center items-center px-4 sm:px-6 md:px-12 lg:px-[90px] font-instrument-sans"
       >
         <motion.div
           initial={{ scale: 0.55, x: 0 }}
@@ -88,15 +88,30 @@ const SolutionPage: React.FC = () => {
           style={{ translateY, scale }}
           className="flex flex-col items-center"
         >
-          <h1 className="text-[40px] sm:text-[60px] md:text-[100px] lg:text-[140px] text-center font-semibold leading-tight">
+          <h1 className="text-[40px] max-w-[400px] text-center font-semibold leading-tight 
+          min-[1500px]:text-[140px] min-[1500px]:max-w-[1300px]
+          min-[1440px]:text-[120px]   min-[1440px]:max-w-[1200px]
+          min-[1200px]:text-[100px] min-[1200px]:max-w-[1000px]
+          min-[1024px]:text-[90px] min-[1024px]:max-w-[900px]
+          min-[600px]:text-[60px] min-[600px]:max-w-[600px]
+          ">
             What Are We
-            <br />
             Fighting Against?
           </h1>
-          <p className="text-gray-500 text-[18px] sm:text-[22px] md:text-[32px] lg:text-[40px] text-center mt-4">
+          <p className="text-gray-500 text-[16px] text-center mt-4
+          min-[1440px]:text-[40px]   min-[1440px]:max-w-[1200px]
+          min-[1200px]:text-[36px] min-[1200px]:max-w-[1000px]
+          min-[1024px]:text-[32px] min-[1024px]:max-w-[900px]
+          min-[600px]:text-[26px] min-[600px]:max-w-[600px]
+          min-[430px]:text-[18px]">
             Users not engaging with your design or project
           </p>
-          <p className="text-gray-500 text-[16px] sm:text-[20px] md:text-[30px] lg:text-[38px] text-center mt-2">
+          <p className="text-gray-500 text-[15px] text-center mt-2
+          min-[1440px]:text-[38px]   min-[1440px]:max-w-[1200px]
+          min-[1200px]:text-[34px] min-[1200px]:max-w-[1000px]
+          min-[1024px]:text-[30px] min-[1024px]:max-w-[900px]
+          min-[600px]:text-[24px] min-[600px]:max-w-[600px]
+          min-[430px]:text-[16px]">
             Let's turn that challenge into opportunities.
           </p>
         </motion.div>

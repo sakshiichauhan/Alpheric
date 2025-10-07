@@ -63,7 +63,7 @@ const Design: React.FC = () => {
         className="py-10 md:py-20  overflow-hidden"
         aria-labelledby="design-heading"
       >
-        <div className="max-w-full flex flex-col px-4 md:px-8 lg:px-16 xl:px-20 ">
+        <div className="max-w-full flex flex-col px-4 sm:px-6 md:px-12 lg:px-[90px] ">
           {/* ✅ Accessible heading */}
           <motion.h1
             id="design-heading"
