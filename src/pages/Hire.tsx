@@ -83,7 +83,7 @@ interface CarouselItem {
          
             className="relative overflow-x-auto no-scrollbar  cursor-grab active:cursor-grabbing  "
           >
-            {/* ✅ Motion wrapper for reveal animation */}
+          
             <motion.div
               initial={{ x: "-100%", opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
