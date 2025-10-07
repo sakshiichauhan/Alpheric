@@ -60,7 +60,7 @@ const Design: React.FC = () => {
     return (
       <section
         ref={sectionRef}
-        className="min-h-screen py-10 md:py-20 overflow-hidden"
+        className="py-10 md:py-20  overflow-hidden"
         aria-labelledby="design-heading"
       >
         <div className="max-w-full flex flex-col px-4 md:px-8 lg:px-16 xl:px-20  md:mt-10">

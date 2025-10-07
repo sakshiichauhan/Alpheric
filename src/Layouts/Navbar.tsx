@@ -40,9 +40,9 @@ const Navbar: FC = () => {
   const handleItemClick = (item: MenuItem) => setActiveItem(item);
 
   return (
-    <nav className="fixed top-0 left-0 w-full flex items-center justify-between font-urbanist px-3 md:px-4 lg:px-9 py-5 bg-transparent backdrop-blur-md z-50">
+    <nav className="fixed top-0 left-0 w-full flex items-center justify-between font-urbanist px-4 sm:px-6 md:px-12 lg:px-[90px] py-5 bg-transparent backdrop-blur-md z-50">
       {/* Logo */}
-      <div className="relative ml-0 lg:ml-12">
+      <div className="relative ml-0">
         <img
           src={Alphericlogo}
           alt="Company logo"

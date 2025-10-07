@@ -51,18 +51,18 @@ const HomePage: React.FC = () => {
   return (
     <section
       id="home"
-      className="min-h-screen w-full bg-[radial-gradient(ellipse_50%_100%_at_top_right,#EDE6FE_10%,#FFFFFF_100%)] overflow-clip"
+      className="w-full bg-[radial-gradient(ellipse_50%_100%_at_top_right,#EDE6FE_10%,#FFFFFF_100%)] overflow-clip"
     >
-      <div className="w-full h-screen flex items-center px-4 sm:px-6 md:px-12 lg:px-[90px]">
+      <div className="w-full lg:pt-70 lg:pb-50 pb-15 pt-30 flex items-center px-4 sm:px-6 md:px-12 lg:px-[90px]">
         <div className="flex flex-col lg:flex-row items-center justify-between w-full gap-8 lg:gap-0">
 
           {/* ✅ LEFT CONTENT */}
-          <div className="w-full lg:w-1/2 flex flex-col justify-center mt-20 lg:mt-0">
+          <div className="w-full lg:w-1/2 flex flex-col justify-center mt-10 sm:mt-20 lg:mt-0">
             <div className="flex items-center gap-2">
               <img src={asset} alt="Digital strategy asset" className="w-auto h-auto" />
             </div>
 
-            <div className="space-y-6 md:space-y-8 mt-8 md:mt-16">
+            <div className="space-y-6 md:space-y-8 mt-8 md:mt-16 relative">
               <button
                 onClick={scrollToBottom}
                 className="px-6 sm:px-8 py-2 sm:py-3 rounded-full border border-black text-base sm:text-lg hover:bg-[#56c8dc] hover:text-white transition-colors"
@@ -71,26 +71,27 @@ const HomePage: React.FC = () => {
               </button>
 
               {/* ✅ TEAM SECTION */}
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 sm:gap-4 font-urbanist md:mt-10">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-5">
-                  <p className="text-base sm:text-[20px] text-[#444444]">
-                    You'll Be Talking With <br /> Our Creative Talents.
+              <div className="flex flex-col min-[1550px]:flex-row justify-between items-start min-[1550px]:items-center gap-6 min-[1550px]:gap-4 font-urbanist md:mt-10">
+                  <div className="flex flex-col items-start sm:items-center gap-3 sm:gap-5 lg:flex-row">
+                  <p className="text-base sm:text-[20px] text-[#444444] lg:max-w-[200px] lg:min-w-[200px] max-w-[280px] sm:max-w-full">
+                    You'll Be Talking With 
+                    Our Creative Talents.
                   </p>
-                  <div className="flex space-x-1">
+                  <div className="flex space-x-1 lg:max-w-[200px] lg:min-w-[200px] self-start">
                     {TEAM_ASSETS.map((imgSrc, idx) => (
                       <img
                         key={idx}
                         src={imgSrc}
                         alt={`Team member ${idx + 1}`}
-                        className="w-[30px] h-[30px] sm:w-[36px] sm:h-[36px]  object-cover"
+                        className="w-[30px] h-[30px] sm:w-[36px] sm:h-[36px] object-cover"
                       />
                     ))}
                   </div>
                 </div>
 
-                <p className="text-base sm:text-[20px] text-gray-600 max-w-md">
-                  Let's craft a digital strategy powered by <br className="hidden sm:block" />
-                  award-winning tech to drive real results and <br className="hidden sm:block" />
+                <p className="text-base sm:text-[20px] text-gray-600 sm:max-w-[400px] lg:max-w-[400px] lg:min-w-[400px] max-w-[300px]">
+                  Let's craft a digital strategy powered by 
+                  award-winning tech to drive real results and 
                   grow your business — together! 🚀
                 </p>
               </div>
@@ -100,7 +101,8 @@ const HomePage: React.FC = () => {
           {/* ✅ RIGHT CONTENT */}
           <div className="w-full lg:w-1/2 relative h-full flex items-center justify-center lg:justify-end">
             {/* Animated GIF */}
-            <div className="hidden md:block absolute z-10 left-10 bottom-32 transform -translate-y-10">
+            <div className="hidden md:block absolute z-10 lg:left-10 lg:bottom-32 lg:transform lg:-translate-y-10 
+                max-[1240px]:translate-x-[50px] bottom-65 right-100">
               <div className="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-40 lg:h-40 rounded-full overflow-hidden">
                 <img
                   src={alpheric_animation}
@@ -111,9 +113,15 @@ const HomePage: React.FC = () => {
             </div>
 
             {/* Spiral Background */}
-            <div className="hidden md:block absolute md:right-[-680px] lg:right-[-260px] md:top-[-600px] lg:top-[-400px] w-full md:w-[510px] lg:w-[900px] h-[690px] mx-auto">
-              <img src={Spiral} alt="Spiral background" className="w-full h-auto" />
-            </div>
+            <div className="hidden md:block absolute
+                md:right-[-680px]
+                lg:right-[-260px]
+                max-[1240px]:translate-x-[150px]
+                md:top-[-600px] lg:top-[-400px]
+                w-full md:w-[510px] lg:w-[900px] h-[690px] mx-auto">
+  <img src={Spiral} alt="Spiral background" className="w-full h-auto" />
+</div>
+
 
             {/* ✅ Floating Video Panel */}
             {isPanelVisible && (
