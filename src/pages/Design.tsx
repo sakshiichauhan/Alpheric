@@ -81,10 +81,10 @@ const Design: React.FC = () => {
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
             custom={1}
-            className="flex items-center justify-start gap-2 md:gap-4 font-instrument-serif-italics text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl  leading-tight"
+            className="flex items-center justify-start gap-2 md:gap-4 font-instrument-serif-italics text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl  leading-tight pb-[40px]"
           >
             <MoveRight className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 flex-shrink-0" />
-            <span>oh, with amazing people too</span>
+            <span className="">oh, with amazing people too</span>
           </motion.div>
   
           {/* ✅ Video section */}

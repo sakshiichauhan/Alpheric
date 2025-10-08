@@ -9,6 +9,7 @@ import Build from "@/assets/Solutions/Build.jpg";
 import Design from "@/assets/Solutions/Design.jpg";
 import Host from "@/assets/Solutions/Host.jpg";
 import Market from "@/assets/Solutions/Market.jpg";
+import Blank from "@/assets/Solutions/Blank.png";
 
 interface CardData {
   title: string;
@@ -18,6 +19,11 @@ interface CardData {
 }
 
 const cardsData: CardData[] = [
+  {
+    title: "",
+    description: "",
+    imageUrl: Blank,
+  },
   {
     title: "Your Business, Simplified",
     description: "We're here to handle it all so you can focus on what matters most.",
