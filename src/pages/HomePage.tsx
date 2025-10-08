@@ -12,7 +12,7 @@ import asset_3 from "@/assets/Homeicons/asset-3.png";
 import asset_4 from "@/assets/Homeicons/asset-4.png";
 import asset_5 from "@/assets/Homeicons/asset-5.png";
 
-import alpheric_animation from "@/assets/Homepage/alpheric-gif.gif";
+
 
 const TEAM_ASSETS = [asset_1, asset_2, asset_3, asset_4, asset_5];
 
@@ -72,7 +72,7 @@ const HomePage: React.FC = () => {
 
               {/* ✅ TEAM SECTION */}
               <div className="flex flex-col min-[1550px]:flex-row justify-between items-start min-[1550px]:items-center gap-6 min-[1550px]:gap-4 font-urbanist md:mt-10">
-                  <div className="flex flex-col items-start sm:items-center gap-3 sm:gap-5 lg:flex-row">
+                  <div className="flex flex-row items-start sm:items-center gap-3 sm:gap-5 lg:flex-row">
                   <p className="text-base sm:text-[20px] text-[#444444] lg:max-w-[200px] lg:min-w-[200px] max-w-[280px] sm:max-w-full">
                     You'll Be Talking With 
                     Our Creative Talents.
@@ -101,16 +101,10 @@ const HomePage: React.FC = () => {
           {/* ✅ RIGHT CONTENT */}
           <div className="w-full lg:w-1/2 relative h-full flex items-center justify-center lg:justify-end">
             {/* Animated GIF */}
-            <div className="hidden md:block absolute z-10 lg:left-10 lg:bottom-32 lg:transform lg:-translate-y-10 
+            {/* <div className="hidden md:block absolute z-10 lg:left-10 lg:bottom-32 lg:transform lg:-translate-y-10 
                 max-[1240px]:translate-x-[50px] bottom-65 right-100">
-              <div className="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-40 lg:h-40 rounded-full overflow-hidden">
-                <img
-                  src={alpheric_animation}
-                  alt="Alpheric animated logo"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
+              
+            </div> */}
 
             {/* Spiral Background */}
             <div className="hidden md:block absolute
