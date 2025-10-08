@@ -53,7 +53,7 @@ const HomePage: React.FC = () => {
       id="home"
       className="w-full bg-[radial-gradient(ellipse_50%_100%_at_top_right,#EDE6FE_10%,#FFFFFF_100%)] overflow-clip"
     >
-      <div className="w-full lg:pt-70 lg:pb-50 pb-15 pt-30 flex items-center px-4 sm:px-6 md:px-12 lg:px-[90px]">
+      <div className="w-full lg:pt-50 lg:pb-50 pb-15 pt-30 flex items-center px-4 sm:px-6 md:px-12 lg:px-[90px]">
         <div className="flex flex-col lg:flex-row items-center justify-between w-full gap-8 lg:gap-0">
 
           {/* ✅ LEFT CONTENT */}
@@ -71,13 +71,14 @@ const HomePage: React.FC = () => {
               </button>
 
               {/* ✅ TEAM SECTION */}
-              <div className="flex flex-col min-[1550px]:flex-row justify-between items-start min-[1550px]:items-center gap-6 min-[1550px]:gap-4 font-urbanist md:mt-10">
-                  <div className="flex flex-row items-start sm:items-center gap-3 sm:gap-5 lg:flex-row">
+              <div className="flex flex-col justify-between gap-[48px] font-urbanist md:mt-10">
+
+                  <div className="flex flex-col items-start sm:items-center gap-3 sm:gap-5 lg:flex-row">
                   <p className="text-base sm:text-[20px] text-[#444444] lg:max-w-[200px] lg:min-w-[200px] max-w-[280px] sm:max-w-full">
                     You'll Be Talking With 
                     Our Creative Talents.
                   </p>
-                  <div className="flex space-x-1 lg:max-w-[200px] lg:min-w-[200px] self-start">
+                  <div className="flex lg:max-w-[200px] lg:min-w-[200px] lg:justify-center items-center gap-1 lg:self-center self-start">
                     {TEAM_ASSETS.map((imgSrc, idx) => (
                       <img
                         key={idx}
