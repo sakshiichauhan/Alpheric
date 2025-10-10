@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { MoveRight } from "lucide-react";
 import { motion } from "framer-motion";
 
-import girl from "@/assets/girls.png";
+import girl from "@/assets/CommingSoon/girls.png";
 
 
 const Contact: React.FC = () => {
