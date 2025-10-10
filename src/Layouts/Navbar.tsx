@@ -120,7 +120,6 @@
 
 
 import * as React from "react";
-import FocusLock from "react-focus-lock";
 import {
   motion,
   AnimatePresence,
@@ -128,30 +127,22 @@ import {
   useTransform,
   useReducedMotion,
   useMotionValueEvent,
-  useMotionValue,
-  animate,
   cubicBezier,
   type Transition,
-  useSpring, 
+  useSpring,
 } from "framer-motion";
 import {
   ChevronDown,
   ArrowUpRight,
   Menu as MenuIcon,
   X as XIcon,
-  ArrowUpToLine,
-  Dribbble,
-  Linkedin,
-  Instagram,
 } from "lucide-react";
 
 import BlackLogo from "@/assets/logo/Blacklogo.png";
-import WhiteLogo from "@/assets/logo/WhiteLogo.png";
 
 /* ---------------- Types & Data ---------------- */
 type SubLink = { id: string; label: string; href: string; frontImg?: string; backImg?: string };
 type MenuItem = { id: string; label: string; href?: string; items?: SubLink[]; variant?: "links" | "cards" };
-type Social   = { id: string; label: string; href: string; icon: React.ReactNode };
 
 const MENU: MenuItem[] = [
   { id: "Pilot",   label: "Pilot",   href: "/Pilot" },
@@ -172,99 +163,129 @@ const MENU: MenuItem[] = [
   { id: "Careers", label: "Careers", href: "/Careers" },
 ];
 
-const SOCIALS: Social[] = [
-  { id: "dribbble", label: "Dribbble", href: "#", icon: <Dribbble className="h-4 w-4" /> },
-  { id: "linkedin", label: "LinkedIn", href: "#", icon: <Linkedin className="h-4 w-4" /> },
-  { id: "instagram", label: "Instagram", href: "#", icon: <Instagram className="h-4 w-4" /> },
-];
-
 /* ---------------- Utils ---------------- */
 const SPRING: Transition = { type: "spring", stiffness: 420, damping: 32, mass: 0.8 };
 const FADE:   Transition = { duration: 0.18, ease: cubicBezier(0.22, 1, 0.36, 1) };
 const cx = (...xs: Array<string | false | null | undefined>) => xs.filter(Boolean).join(" ");
 
-// helpers
-const easeIO = cubicBezier(0.45, 0, 0.55, 1); 
-
 /* ---------------- Component ---------------- */
 export default function Navbar() {
   const prefersReducedMotion = useReducedMotion();
 
-  // Scroll values
-  const { scrollY } = useScroll();
+  // Desktop-only animation gate
+  const [isDesktop, setIsDesktop] = React.useState(false);
+  React.useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    if (mq.addEventListener) mq.addEventListener("change", update);
+    else mq.addListener(update);
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener("change", update);
+      else mq.removeListener(update);
+    };
+  }, []);
 
-  // Smooth, reversible playhead: 0 at top → 1 by ~160px scroll
+  // Scroll → smooth reversible playhead (0..1 by ~160px) — desktop only
+  const { scrollY } = useScroll();
   const playRaw = useTransform(scrollY, [0, 160], [0, 1]);
   const play    = useSpring(playRaw, { stiffness: 220, damping: 28, mass: 0.9 });
 
-  // Split into phases (A = content glide, B = capsule)
-  const a = useTransform(play, [0, 0.6], [0, 1]);   // early ease for logo/CTA
-  const b = useTransform(play, [0.25, 1], [0, 1]);  // later ease for bar/capsule
+  // PHASES: 1) width-travel, 2) styling
+  const TRAVEL_END = 0.58;
+  const travel = useTransform(play, v => (isDesktop ? (v <= 0 ? 0 : v >= TRAVEL_END ? 1 : v / TRAVEL_END) : 0));
+  const stylin = useTransform(play, v => (isDesktop ? (v <= TRAVEL_END ? 0 : (v - TRAVEL_END) / (1 - TRAVEL_END)) : 0));
 
-  // Visuals driven by B (capsule)
-  const bg        = useTransform(b, [0, 1], ["rgba(0,0,0,0)", "rgba(0,0,0,1)"]);
-  const height    = useTransform(b, [0, 1], ["92px", "58px"]);
-  const radius    = useTransform(b, [0, 1], ["0px", "9999px"]);
-  const shadow    = useTransform(b, [0, 1], ["0 0 0 0 rgba(0,0,0,0)", "0 12px 36px rgba(0,0,0,0.28)"]);
-  const borderCol = useTransform(b, [0, 1], ["rgba(0,0,0,0)", "rgba(255,255,255,0.12)"]);
-  const fg        = useTransform(b, [0, 1], ["#111111", "#ffffff"]);
+  // Phase 2 visuals (desktop only)
+  const bgColor   = useTransform(stylin, [0, 1], ["rgba(0,0,0,0)", "white"]);
+  const radius    = useTransform(stylin, [0, 1], ["0px", "9999px"]);
+  const borderCol = useTransform(stylin, [0, 1], ["rgba(0,0,0,0)", "rgba(255,255,255,0.12)"]);
+  const shadow    = useTransform(stylin, [0, 1], ["0 0 0 rgba(0,0,0,0)", "0 12px 36px rgba(0,0,0,0.28)"]);
 
-  // Subtle logo scale; offsets for travel
-  const logoScale = useTransform(play, [0, 1], [1, 0.93]);
-  const logoX     = useTransform(a,    [0, 1], ["-22px", "0px"]);
-  const ctaX      = useTransform(a,    [0, 1], ["22px",  "0px"]);
-  const fadeA     = useTransform(a,    [0, 1], [0, 1]);
+  // Background "padding" illusion (VERTICAL): 24 → 8 (no vertical content shift)
+  const CONTENT_H = 56;   // row content height (h-14)
+  const PAD_Y_START = 24;
+  const PAD_Y_END   = 8;
+  const bgHeight = useTransform(
+    stylin,
+    [0, 1],
+    [`${CONTENT_H + 2 * PAD_Y_START}px`, `${CONTENT_H + 2 * PAD_Y_END}px`]
+  );
 
-  // Compact boolean
+  // Background "padding" illusion (HORIZONTAL): 24 → 8 (no horizontal squeeze)
+  const PAD_X_START = 24;
+  const PAD_X_END   = 8;
+  const SAFE_FUDGE  = 4; // to avoid final squeeze/clipping
+
+
+  // Compact toggle for text classes
   const [compact, setCompact] = React.useState(false);
-  useMotionValueEvent(b, "change", (v) => setCompact(v > 0.02));
+  useMotionValueEvent(stylin, "change", (v) => setCompact(v > 0.02));
 
-  // Playhead we animate ourselves (0..1)
-  const prog = useMotionValue(0);
+  /* ---------- Measurement for width-driven travel ---------- */
+  const shellRef = React.useRef<HTMLDivElement | null>(null);
+  const rowRef   = React.useRef<HTMLDivElement | null>(null);
+  const logoWrapRef = React.useRef<HTMLSpanElement | null>(null);
+  const menuRef  = React.useRef<HTMLUListElement | null>(null);
+  const ctaRef   = React.useRef<HTMLAnchorElement | null>(null);
 
-  // Phase A: logo + CTA glide in (0 → 0.65 of prog)
-useMotionValueEvent(b, "change", (v) => setCompact(v > 0.02));
+  const [startW, setStartW]   = React.useState<number>(typeof window !== "undefined" ? window.innerWidth : 1440);
+  const [targetW, setTargetW] = React.useState<number>(800);       // final frame width (for travel)
+  const [contentW, setContentW] = React.useState<number>(0);       // measured content width (logo + gap + menu + gap + CTA)
 
-  // Animate the playhead on first-scroll; ignore extra scroll until finished
-  const animatingRef = React.useRef(false);
+  const CLUSTER_GAP = 8; // menu "mx-2" = 8px each side, matches li gap-2
 
-  useMotionValueEvent(scrollY, "change", (y) => {
-    if (y <= 0 && !animatingRef.current) {
-      // Smoothly reset when fully back to top
-      animate(prog, 0, { duration: 0.35, ease: easeIO });
-      return;
-    }
-    if (y > 0 && prog.get() === 0 && !animatingRef.current) {
-      animatingRef.current = true;
-      (async () => {
-        // Phase A: logo & CTA glide in
-        await animate(prog, 0.65, { duration: 0.85, ease: easeIO }).finished;
-        // Phase B: capsule shrink + bg → black
-        await animate(prog, 1,    { duration: 0.70, ease: easeIO }).finished;
-        animatingRef.current = false;
-      })();
-    }
+  const measure = React.useCallback(() => {
+    const logo  = logoWrapRef.current;
+    const menu  = menuRef.current;
+    const cta   = ctaRef.current;
+    if (!logo || !menu || !cta) return;
+
+    const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    setStartW(vw);
+
+    const logoW = Math.ceil(logo.getBoundingClientRect().width);
+    const menuW = Math.ceil(menu.getBoundingClientRect().width);
+    const ctaW  = Math.ceil(cta.getBoundingClientRect().width);
+
+    const cw = logoW + CLUSTER_GAP + menuW + CLUSTER_GAP + ctaW;
+    setContentW(cw);
+
+    // final outer frame width that drives left/right travel (uses final horizontal pad 8)
+    const finalW = cw + 2 * PAD_X_END + SAFE_FUDGE;
+    setTargetW(finalW);
+  }, []);
+
+  React.useLayoutEffect(() => {
+    measure();
+    const onResize = () => measure();
+    window.addEventListener("resize", onResize);
+
+    const ro = new ResizeObserver(() => measure());
+    if (rowRef.current)      ro.observe(rowRef.current);
+    if (menuRef.current)     ro.observe(menuRef.current);
+    if (logoWrapRef.current) ro.observe(logoWrapRef.current);
+    if (ctaRef.current)      ro.observe(ctaRef.current);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+      ro.disconnect();
+    };
+  }, [measure]);
+
+  // Phase 1: frame width shrinks (desktop only) -> drives left/right travel
+  const shellW  = useTransform(travel, (t) => startW + (targetW - startW) * t);
+
+  // Phase 2: bg width animates to create px 24 → 8 illusion without touching content
+  const bgWidth = useTransform(stylin, (s) => {
+    const padX = PAD_X_START + (PAD_X_END - PAD_X_START) * s; // 24 → 8
+    const w = contentW + 3 * padX + SAFE_FUDGE;
+    return `${w}px`;
   });
 
-  // Mobile/desktop menu state
+  // Mobile/desktop state
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [deskOpen,   setDeskOpen]   = React.useState<string | null>(null);
-  const [mobileSub,  setMobileSub]  = React.useState<string | null>(null);
-
-  // Lock page scroll when mobile drawer open
-  React.useEffect(() => {
-    const html = document.documentElement;
-    if (!mobileOpen) return;
-    const y = window.scrollY;
-    html.style.top = `-${y}px`;
-    html.classList.add("overflow-hidden");
-    return () => {
-      html.classList.remove("overflow-hidden");
-      const restore = parseInt(html.style.top || "0", 10) * -1;
-      html.style.top = "";
-      window.scrollTo(0, restore || 0);
-    };
-  }, [mobileOpen]);
 
   // Close menus on Escape
   React.useEffect(() => {
@@ -279,43 +300,78 @@ useMotionValueEvent(b, "change", (v) => setCompact(v > 0.02));
   }, []);
 
   return (
-    <nav className="fixed inset-x-0 top-4 z-50">
-      {/* Shell: full-bleed at top; centered capsule on scroll */}
+    <nav className="fixed left-0 right-0 top-4 z-50 flex justify-center px-4 sm:px-6 md:px-12 lg:px-[90px]">
+      {/* FRAME: width shrink only. No bg/padding here. */}
       <motion.div
-  style={{ backgroundColor: bg, color: fg, height, borderRadius: radius, boxShadow: shadow, borderColor: borderCol }}
-  transition={FADE}
-  className={cx(
-    "pointer-events-auto border",
-    compact ? "block mx-auto w-fit" : "block w-full"
-  )}
->
-  <div
-    className={cx(
-      "flex h-full items-center gap-3",
-      compact
-        ? "px-3 sm:px-4 py-1.5"                   // tighter padding when compact
-        : "px-4 sm:px-6 md:px-12 lg:px-[90px] py-0 justify-between"
-    )}
-  >
+        ref={shellRef}
+        style={{ width: isDesktop ? (shellW as any) : "100%" }}
+        transition={FADE}
+        className="relative pointer-events-auto"
+      >
+        {/* CAPSULE BACKGROUND (absolute, behind content). */}
+        <motion.div
+          aria-hidden
+          className="absolute left-0 right-0 mx-auto pointer-events-none"
+          style={{
+            top: 0,
+            bottom: 0,
+            marginTop: "auto",
+            marginBottom: "auto",
+            height: isDesktop ? (bgHeight as any) : `${CONTENT_H + 2 * PAD_Y_END}px`,
+            width: isDesktop ? (bgWidth as any) : "100%",
+            backgroundColor: isDesktop ? (bgColor as any) : "transparent",
+            borderRadius: isDesktop ? (radius as any) : 0,
+            boxShadow: isDesktop ? (shadow as any) : "none",
+            border: `1px solid`,
+            borderColor: isDesktop ? (borderCol as any) : "transparent",
+            zIndex: 0,
+          }}
+        />
 
-          {/* Brand (always visible; glides in on first scroll) */}
-          <a href="/" className="flex items-center gap-3" aria-label="Homepage">
-  <motion.span style={{ x: logoX, scale: logoScale }} className="inline-flex items-center gap-3">
-    <img
-      src={compact ? WhiteLogo : BlackLogo}
-      alt="logo"
-      className="h-8 w-auto select-none"
-      draggable={false}
-    />
-  </motion.span>
-</a>
+        {/* CONTENT ROW (fixed height, above bg) */}
+        <div
+          ref={rowRef}
+          className="relative z-10 flex h-14 items-center gap-0"
+          style={{ width: "auto" }}
+        >
+          {/* LEFT: Logo */}
+          <a href="/" className="flex items-center" aria-label="Homepage">
+            <span ref={logoWrapRef} className="inline-flex items-center shrink-0">
+              <div className="relative h-8">
+                <motion.img
+                  src={BlackLogo}
+                  alt="logo"
+                  className={`h-8 w-auto select-none pl-6`}
+                  draggable={false}
+                />
+              </div>
+            </span>
+          </a>
 
-          {/* Desktop nav */}
-          <div className={cx("hidden lg:block", compact ? "" : "flex-1")}>
-            <ul className={cx("flex items-center gap-2", compact ? "" : "justify-center")}>
+          {/* FLEX SPACER (left) */}
+          <div className="flex-1" />
+
+          {/* CENTER: Menu (static) */}
+          <div className="hidden lg:block">
+            <ul 
+            className="mx-2 flex items-center gap-2 rounded-full px-2 py-1"
+            style={
+              isDesktop
+                ? {
+                    borderWidth: 1,
+                    borderStyle: "solid",
+                    borderColor: "transparent", // required with border-image
+                    borderImageSource:
+                      "linear-gradient(to right, #5AC8DC33, #B8F4FF1A, #FFFFFF)", // blue → white
+                    borderImageSlice: 1, // <-- critical
+                    borderRadius: 9999,
+                  }
+                : undefined
+            }
+             ref={menuRef}>
               {MENU.map((m) => {
-                const hasMenu = !!m.items?.length;
                 const open = deskOpen === m.id;
+                const hasMenu = !!m.items?.length;
                 return (
                   <li
                     key={m.id}
@@ -326,9 +382,7 @@ useMotionValueEvent(b, "change", (v) => setCompact(v > 0.02));
                     <button
                       className={cx(
                         "group inline-flex items-center gap-1 text-[16px] rounded-full px-4 py-2 text-sm transition focus-visible:outline-none focus-visible:ring-2",
-                        compact
-                          ? "text-white hover:bg-white/10 focus-visible:ring-white/40"
-                          : "text-black hover:bg-black/[0.05] focus-visible:ring-black/40"
+                       "text-black hover:bg-black/[0.05] focus-visible:ring-black/40"
                       )}
                       aria-haspopup={hasMenu ? "menu" : undefined}
                       aria-expanded={hasMenu ? open : undefined}
@@ -337,15 +391,12 @@ useMotionValueEvent(b, "change", (v) => setCompact(v > 0.02));
                       {m.label}
                       {hasMenu && (
                         <ChevronDown
-                          className={cx(
-                            "h-4 w-4 opacity-70 transition-transform duration-300",
-                            open && "rotate-180"
-                          )}
+                          className="h-4 w-4 opacity-70 transition-transform duration-300"
+                          style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
                         />
                       )}
                     </button>
 
-                    {/* Dropdown theme follows bar */}
                     <AnimatePresence>
                       {hasMenu && open && (
                         <motion.div
@@ -356,94 +407,66 @@ useMotionValueEvent(b, "change", (v) => setCompact(v > 0.02));
                           exit={{ opacity: 0, y: -6, scale: 0.98 }}
                           transition={prefersReducedMotion ? FADE : SPRING}
                           className={cx(
-                            "absolute left-0 mt-2 min-w-[260px] rounded-2xl border p-2 shadow-xl",
-                            compact ? "border-white/15 bg-black text-white" : "border-black/10 bg-white text-gray-900"
+                            "absolute left-0 mt-2 min-w-[260px] rounded-2xl border p-2 shadow-xl","border-black/10 bg-white text-gray-900"
                           )}
                         >
-                          <motion.ul
-                            initial="hidden"
-                            animate="show"
-                            variants={{
-                              hidden: { transition: { staggerChildren: 0.02, staggerDirection: -1 } },
-                              show:   { transition: { staggerChildren: 0.03 } },
-                            }}
-                            className="grid gap-1"
-                          >
+                          <ul className="grid gap-1">
                             {m.items!.map((s) => (
-                              <motion.li
-                                key={s.id}
-                                variants={{
-                                  hidden: { opacity: 0, y: 6 },
-                                  show:   { opacity: 1, y: 0, transition: { duration: 0.16 } },
-                                }}
-                              >
+                              <li key={s.id}>
                                 <a
                                   href={s.href}
                                   role="menuitem"
                                   className={cx(
-                                    "group flex items-center gap-2 rounded-lg px-3 py-2 text-sm",
-                                    compact ? "hover:bg-white/10" : "text-gray-800 hover:bg-gray-50",
-                                    m.variant === "cards" && "border border-black/5"
+                                    "group flex items-center gap-2 rounded-lg px-3 py-2 text-sm", "text-gray-800 hover:bg-gray-50"
                                   )}
                                 >
-                                  {m.variant === "cards" && s.frontImg && (
-                                    <span
-                                      className={cx(
-                                        "relative h-8 w-8 overflow-hidden rounded-md ring-1",
-                                        compact ? "ring-white/15" : "ring-black/10"
-                                      )}
-                                    >
-                                      <img src={s.frontImg} alt="" className="h-full w-full object-cover" loading="lazy" />
-                                    </span>
-                                  )}
                                   <span>{s.label}</span>
                                   <ArrowUpRight
                                     className={cx(
-                                      "ml-auto h-4 w-4 transition",
-                                      compact
-                                        ? "opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                                        : "opacity-50 group-hover:opacity-80 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                                      "ml-auto h-4 w-4 transition", "opacity-50 group-hover:opacity-80 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                                     )}
                                   />
                                 </a>
-                              </motion.li>
+                              </li>
                             ))}
-                          </motion.ul>
+                          </ul>
                         </motion.div>
                       )}
                     </AnimatePresence>
                   </li>
                 );
-              })}
+              })} 
             </ul>
           </div>
 
-          {/* Right cluster */}
-          <div className="flex items-center gap-3">
-            {/* 56px CTA, glides in with Phase A */}
-            <motion.a
-  style={{ x: ctaX, opacity: fadeA }}
-  href="/inquiry"
-  className={cx(
-    "hidden lg:inline-flex items-center justify-center rounded-full px-5 h-10 text-sm font-medium transition",
-    compact
-      ? "ml-2 bg-white text-black hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
-      : "pointer-events-none opacity-0" // hidden until compact
-  )}
->
-  Inquiry Now
-</motion.a>
+          {/* FLEX SPACER (right) */}
+          <div className="flex-1" />
 
-            {/* Burger */}
+          {/* RIGHT: CTA */}
+          <div className="flex items-center">
+            <a
+              ref={ctaRef}
+              href="/inquiry"
+              className={cx(
+                "hidden lg:inline-flex shrink-0 items-center justify-center",
+                "rounded-full px-6 text-sm font-medium h-14 text-[20px]",
+                "focus-visible:outline-none focus-visible:ring-2",
+                "transition-all duration-300",
+                compact ?   "bg-black text-white hover:bg-black/90 focus-visible:ring-black/40" : "bg-white text-black hover:bg-white/90 focus-visible:ring-white/40"
+                
+              )}
+            >
+              Inquiry Now
+            </a>
+
+            {/* Burger (mobile only; no scroll anim on mobile) */}
             <button
               aria-label="Open menu"
               aria-expanded={mobileOpen}
               onClick={() => setMobileOpen(v => !v)}
               className={cx(
-                "inline-flex h-11 w-11 items-center justify-center rounded-full border transition lg:hidden",
-                compact
-                  ? "border-white/30 text-white hover:bg-white/10"
-                  : "border-black/15 text-black hover:bg-black/[0.05]"
+                "ml-3 inline-flex h-11 w-11 items-center justify-center rounded-full border transition lg:hidden",
+                "border-black/15 text-black hover:bg-black/[0.05]"
               )}
             >
               <motion.div initial={false} animate={{ rotate: mobileOpen ? 90 : 0 }} transition={FADE}>
@@ -453,219 +476,6 @@ useMotionValueEvent(b, "change", (v) => setCompact(v > 0.02));
           </div>
         </div>
       </motion.div>
-
-      {/* -------- Mobile Drawer -------- */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <>
-            <motion.div
-              className="fixed inset-0 z-40 bg-black/30 lg:hidden"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={FADE}
-              onClick={() => setMobileOpen(false)}
-            />
-            <FocusLock returnFocus>
-              <motion.aside
-                className="fixed inset-y-0 right-0 z-50 w-full max-w-md overflow-y-auto bg-white shadow-xl lg:hidden"
-                initial={{ x: "100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: "100%" }}
-                transition={prefersReducedMotion ? FADE : SPRING}
-              >
-                <div className="flex items-center justify-between px-4 py-3">
-                  <a href="/" className="flex items-center gap-2 text-gray-900" onClick={() => setMobileOpen(false)}>
-                    <img src={BlackLogo} alt="logo" className="h-7 w-auto" />
-                    <span className="hidden rounded bg-gray-900 px-2 py-1 text-xs font-semibold text-white sm:inline">
-                      Alpheric
-                    </span>
-                  </a>
-                  <button
-                    className="rounded-full border border-black/10 p-2"
-                    onClick={() => setMobileOpen(false)}
-                    aria-label="Close menu"
-                  >
-                    <XIcon className="h-5 w-5" />
-                  </button>
-                </div>
-
-                <nav className="px-3 pb-8">
-                  <ul className="space-y-2">
-                    {MENU.map((m) => {
-                      const hasMenu = !!m.items?.length;
-                      const open = mobileSub === m.id;
-                      return (
-                        <li key={m.id} className="rounded-2xl border border-black/10">
-                          <div className="flex items-center justify-between">
-                            <a
-                              href={m.href || "#"}
-                              className="flex-1 px-4 py-3 text-base font-medium text-gray-900"
-                              onClick={() => setMobileOpen(false)}
-                            >
-                              {m.label}
-                            </a>
-                            {hasMenu && (
-                              <button
-                                className="px-3 py-3 text-gray-600"
-                                aria-expanded={open}
-                                onClick={() => setMobileSub(open ? null : m.id)}
-                              >
-                                <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }} className="inline-flex">
-                                  <ChevronDown className="h-4 w-4" />
-                                </motion.span>
-                              </button>
-                            )}
-                          </div>
-
-                          <AnimatePresence initial={false}>
-                            {hasMenu && open && (
-                              <motion.div
-                                key="collapsible"
-                                initial="collapsed"
-                                animate="open"
-                                exit="collapsed"
-                                variants={{
-                                  open: { height: "auto", transition: { when: "beforeChildren", staggerChildren: 0.03 } },
-                                  collapsed: { height: 0 },
-                                }}
-                                transition={prefersReducedMotion ? FADE : SPRING}
-                                className="overflow-hidden"
-                              >
-                                <motion.ul variants={{ open: {}, collapsed: {} }} className="grid gap-1 px-2 pb-3 pt-1">
-                                  {m.items!.map((s) => (
-                                    <motion.li
-                                      key={s.id}
-                                      variants={{ open: { opacity: 1, y: 0 }, collapsed: { opacity: 0, y: 6 } }}
-                                      transition={{ duration: 0.16 }}
-                                    >
-                                      <a
-                                        href={s.href}
-                                        className={cx(
-                                          "group flex items-center gap-3 rounded-lg px-2 py-2 text-sm text-gray-800 hover:bg-gray-50",
-                                          m.variant === "cards" && "border border-black/5"
-                                        )}
-                                        onClick={() => setMobileOpen(false)}
-                                      >
-                                        {m.variant === "cards" && s.frontImg && (
-                                          <span className="relative h-10 w-10 overflow-hidden rounded-lg ring-1 ring-black/10">
-                                            <img
-                                              src={s.frontImg}
-                                              alt=""
-                                              className="h-full w-full object-cover transition-opacity duration-200 group-hover:opacity-0"
-                                              loading="lazy"
-                                            />
-                                            {s.backImg && (
-                                              <img
-                                                src={s.backImg}
-                                                alt=""
-                                                className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-                                                loading="lazy"
-                                              />
-                                            )}
-                                          </span>
-                                        )}
-                                        <span>{s.label}</span>
-                                        <ArrowUpRight className="ml-auto h-4 w-4 opacity-50 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-80" />
-                                      </a>
-                                    </motion.li>
-                                  ))}
-                                </motion.ul>
-
-                                <div className="px-4 pb-4">
-                                  <a
-                                    href={m.href || "#"}
-                                    className="inline-flex items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50"
-                                    onClick={() => setMobileOpen(false)}
-                                  >
-                                    View all {m.label.toLowerCase()}
-                                    <ArrowUpRight className="h-3.5 w-3.5" />
-                                  </a>
-                                </div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </li>
-                      );
-                    })}
-                  </ul>
-
-                  <div className="mt-4 space-y-2">
-                    <a
-                      href="/our-portfolio"
-                      className="flex items-center justify-between rounded-2xl border border-black/10 px-4 py-3 text-sm font-medium"
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      explore our work
-                      <ArrowUpRight className="h-4 w-4" />
-                    </a>
-                    <a
-                      href="/blog"
-                      className="flex items-center justify-between rounded-2xl border border-black/10 px-4 py-3 text-sm font-medium"
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      read our latest blogs
-                      <ArrowUpRight className="h-4 w-4" />
-                    </a>
-                  </div>
-
-                  <div className="mt-6 space-y-4 px-4 text-sm text-gray-700">
-                    <div>
-                      <p className="font-semibold">Email</p>
-                      <p className="mt-1">
-                        <a className="underline" href="mailto:sales@thefinch.design">sales@thefinch.design</a> {" · "}
-                        <a className="underline" href="mailto:hr@thefinch.design">hr@thefinch.design</a>
-                      </p>
-                    </div>
-                    <div>
-                      <p className="font-semibold">Call</p>
-                      <p className="mt-1">
-                        <a className="underline" href="tel:917777997049">+91 77779 97049</a> {" · "}
-                        <a className="underline" href="tel:917016391962">+91 70163 91962</a>
-                      </p>
-                    </div>
-                    <div>
-                      <p className="font-semibold">Studio</p>
-                      <p className="mt-1">
-                        E-206A, Ganesh Glory 11, Jagatpur Rd, nr. BSNL Office, Jagatpur, Ahmedabad, Gujarat 382470.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 border-t border-black/10 px-4 py-4">
-                    <ul className="flex items-center gap-3">
-                      {SOCIALS.map((s) => (
-                        <li key={s.id}>
-                          <a
-                            href={s.href}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-gray-700 transition hover:bg-gray-50"
-                            aria-label={s.label}
-                          >
-                            {s.icon}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                    <p className="mt-3 text-xs text-gray-500">© 2025 thefinch.design studio. All Rights Reserved</p>
-                    <div className="mt-2 flex items-center gap-4 text-xs">
-                      <a href="/privacy-policy" className="underline">Privacy policy</a>
-                      <a href="/terms-of-use" className="underline">Terms of Use</a>
-                    </div>
-                    <div className="mt-4">
-                      <a href="#" className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-3 py-1.5 text-xs text-white">
-                        Back to the top
-                        <ArrowUpToLine className="h-4 w-4" />
-                      </a>
-                    </div>
-                  </div>
-                </nav>
-              </motion.aside>
-            </FocusLock>
-          </>
-        )}
-      </AnimatePresence>
     </nav>
   );
 }

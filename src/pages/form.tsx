@@ -1,6 +1,7 @@
 // ContactModal.tsx
 import React, { useEffect, useState } from "react";
-import tik from "@/assets/tik.png";
+import tik from "@/assets/CommingSoon/tik.png";
+import { X } from "lucide-react";
 
 type FormData = {
   fullname: string;
@@ -127,9 +128,15 @@ export default function ContactModal({ open, onClose, onSubmit }: Props) {
   </div>
 ) : (
           /* ======= FORM (modal) ======= */
-          <div className="w-[min(94vw,640px)] rounded-2xl border border-black/10 bg-white shadow-xl">
-            <div className="px-5 py-4 border-b border-black/10">
+          <div className="w-[min(94vw,640px)] max-h-screen rounded-2xl border border-black/10 bg-white shadow-xl overflow-y-auto scrollbar-width-0 
+    [scrollbar-width:none]          /* Firefox */
+    [-ms-overflow-style:none]       /* old Edge/IE */
+    [&::-webkit-scrollbar]:hidden   /* Chrome/Safari/Edge */">
+            <div className="px-5 py-4 border-b border-black/10 flex justify-between items-center">
               <h3 className="text-2xl font-semibold">Get in Touch with Alpheric</h3>
+              <button onClick={onClose} className=" bg-black/10 rounded-full p-2 hover:bg-black/20">
+                <X size={20} />
+              </button>
             </div>
 
             <form onSubmit={handleSubmit} className="px-5 pb-5 pt-4 space-y-4">
@@ -144,7 +151,7 @@ export default function ContactModal({ open, onClose, onSubmit }: Props) {
                   onChange={set("fullname")}
                   onBlur={() => setTouched((t) => ({ ...t, fullname: true }))}
                   placeholder="Enter Fullname"
-                  className={`w-full rounded-lg border bg-white px-3 py-2.5 text-sm outline-none placeholder:text-black/40`}
+                  className={`w-full rounded-lg border border-black/15 focus-within:border-black/40 bg-white px-3 py-2.5 text-sm outline-none placeholder:text-black/40`}
                 />
                 {touched.fullname && errors.fullname && <p className="mt-1 text-xs text-red-600">{errors.fullname}</p>}
               </div>
@@ -160,7 +167,7 @@ export default function ContactModal({ open, onClose, onSubmit }: Props) {
                   onChange={set("company")}
                   onBlur={() => setTouched((t) => ({ ...t, company: true }))}
                   placeholder="Enter Company Name"
-                  className={`w-full rounded-lg border bg-white px-3 py-2.5 text-sm outline-none placeholder:text-black/40`}
+                  className={`w-full rounded-lg border border-black/15 focus-within:border-black/40 bg-white px-3 py-2.5 text-sm outline-none placeholder:text-black/40`}
                 />
               </div>
 
@@ -203,7 +210,7 @@ export default function ContactModal({ open, onClose, onSubmit }: Props) {
                   onChange={set("email")}
                   onBlur={() => setTouched((t) => ({ ...t, email: true }))}
                   placeholder="Enter Email"
-                  className={`w-full rounded-lg border bg-white px-3 py-2.5 text-sm outline-none placeholder:text-black/40`}
+                  className={`w-full rounded-lg border border-black/15 focus-within:border-black/40 bg-white px-3 py-2.5 text-sm outline-none placeholder:text-black/40`}
                 />
                 {touched.email && errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
               </div>
@@ -219,7 +226,7 @@ export default function ContactModal({ open, onClose, onSubmit }: Props) {
                   onChange={set("message")}
                   onBlur={() => setTouched((t) => ({ ...t, message: true }))}
                   placeholder="Enter Your Request"
-                  className={`w-full resize-none rounded-lg border bg-white px-3 py-2.5 text-sm outline-none placeholder:text-black/40`}
+                  className={`w-full resize-none rounded-lg border border-black/15 focus-within:border-black/40 bg-white px-3 py-2.5 text-sm outline-none placeholder:text-black/40`}
                 />
                 {touched.message && errors.message && <p className="mt-1 text-xs text-red-600">{errors.message}</p>}
               </div>

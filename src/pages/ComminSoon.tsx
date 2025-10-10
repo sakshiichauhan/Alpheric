@@ -1,14 +1,14 @@
 // AlphericComingSoon.tsx
 import  { useState } from "react";
-import alphericLogo from "@/assets/logo.png";
-import comingSoonRing from "@/assets/comming-soon.gif";
-import background from "@/assets/background.jpg";
-import container from "@/assets/container.png";
-import facebook from "@/assets/facebook.png";
-import instagram from "@/assets/instagram.png";
-import twitter from "@/assets/twitter.png";
-import linkedin from "@/assets/linkedin.png";
-import youtube from "@/assets/youtube.png";
+import alphericLogo from "@/assets/logo/Whitelogo.png";
+import comingSoonRing from "@/assets/CommingSoon/comming-soon.gif";
+import background from "@/assets/CommingSoon/background.jpg";
+import container from "@/assets/CommingSoon/container.png";
+import facebook from "@/assets/CommingSoon/facebook.png";
+import instagram from "@/assets/CommingSoon/instagram.png";
+import twitter from "@/assets/CommingSoon/twitter.png";
+import linkedin from "@/assets/CommingSoon/linkedin.png";
+import youtube from "@/assets/CommingSoon/youtube.png";
 import ContactModal from "@/pages/form";
 
 export default function AlphericComingSoon() {
@@ -156,11 +156,11 @@ export default function AlphericComingSoon() {
             </div>
 
             {/* Let’s talk — scale at 1380/1200; 640: tight lines */}
-            <div className="mt-8 flex items-center justify-between">
+            <div className="mt-8 flex items-center justify-between group">
               <div className="flex items-center gap-4 sm:gap-5 ">
                 <span
                   className="
-                    font-semibold leading-none
+                    font-semibold leading-none border-b-3 border-b-transparent group-hover:border-b-3 group-hover:border-black
                     text-[48px] sm:text-[56px] lg:text-[87px]
                     max-[1380px]:lg:text-[78px]   /* 1380 */
                     max-[1200px]:lg:text-[70px]   /* 1200 */
@@ -173,15 +173,15 @@ export default function AlphericComingSoon() {
                 <img
                   src={container}
                   alt="Avatar/Pill"
-                  className="
-                    h-10 w-16 sm:w-24 sm:h-[72px]        /* fix invalid */
-                    max-[1380px]:sm:h-[64px] max-[1380px]:sm:w-[88px]
-                    max-[1200px]:sm:h-[56px] max-[1200px]:sm:w-[84px]
+                  className=" 
+                    h-10 w-auto sm:w-auto sm:h-[72px]         /* fix invalid */
+                    max-[1380px]:sm:h-[64px] max-[1380px]:sm:w-auto
+                    max-[1200px]:sm:h-[56px] max-[1200px]:sm:w-auto
                   "
                 />
                 <span
                   className="
-                    font-semibold leading-none
+                    font-semibold leading-none border-b-3 border-b-transparent group-hover:border-b-3 group-hover:border-black
                     text-[48px] sm:text-[56px] lg:text-[87px]
                     max-[1380px]:lg:text-[78px]
                     max-[1200px]:lg:text-[70px]
@@ -196,13 +196,14 @@ export default function AlphericComingSoon() {
   aria-label="Open contact form"
   className="
     inline-flex items-center justify-center rounded-full
-    w-15 h-12 sm:w-20 sm:h-15 lg:w-27 lg:h-20
+    w-15 h-12 sm:w-20 sm:h-15 lg:w-34 lg:h-20
     text-xl sm:text-2xl lg:text-3xl
     bg-transparent text-current
     transition-all duration-200 ease-out
-    hover:bg-black hover:text-white hover:scale-95
-    active:scale-90
+    group-hover:bg-black group-hover:text-white group-hover:scale-95
+    group-hover:active:scale-90
     max-sm:leading-tight
+    hover:cursor-pointer
   "
 >
   →
@@ -251,9 +252,9 @@ export default function AlphericComingSoon() {
 }
 
 const SOCIALS = [
-  { label: "Facebook", href: "#", icon: facebook },
-  { label: "Instagram", href: "#", icon: instagram },
+  { label: "Facebook", href: "https://www.facebook.com/alpheric/", icon: facebook },
+  { label: "Instagram", href: "https://www.instagram.com/alpheric.consultants/", icon: instagram },
   { label: "X", href: "#", icon: twitter },
-  { label: "LinkedIn", href: "#", icon: linkedin },
-  { label: "YouTube", href: "#", icon: youtube },
+  { label: "LinkedIn", href: "https://in.linkedin.com/company/alphericconsultants", icon: linkedin },
+  { label: "YouTube", href: "https://www.youtube.com/@AlphericLive", icon: youtube },
 ];

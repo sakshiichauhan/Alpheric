@@ -11,12 +11,14 @@ import Footer from "@/Layouts/Footer"
 import WhatNext from "@/pages/Homepage/WhatNext"
 import OurProjects from "@/pages/Homepage/OurProjects"
 
+
+import AlphericComingSoon from "@/pages/ComminSoon"
 function App() {
 
 
   return (
     <>
-    <Navbar/>
+    {/* <Navbar/>
 <HomePage/>
 <Questionaire/>
 <Design/>
@@ -26,8 +28,8 @@ function App() {
 <Hire/>
 <Contact/>
 
-<Footer/>
-      {/* <AlphericComingSoon/> */}
+<Footer/> */}
+ <AlphericComingSoon/>
     </>
   )
 }
